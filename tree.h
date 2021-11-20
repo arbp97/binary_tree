@@ -37,7 +37,12 @@ void insert (Tree * tree, int data);
   Busca el lugar indicado para un nuevo nodo en el arbol, segun
   el valor del root indicado (node), y lo inserta
 */
-void search (Node * node, Node * newNode);
+void push (Node * node, Node * newNode);
+
+/*
+  Busca el dato indicado en el arbol
+*/
+bool search (Tree * tree, int data);
 
 /******************************************************************************/
 
@@ -47,7 +52,8 @@ void preOrder (Node * root);
 
 void inOrder (Node * root);
 
-void postOrder (Node * root);
+bool preOrderSearch (Node * root, int data, bool * result);
 
+void postOrder (Node * root);
 
 #endif //_TREE_H_

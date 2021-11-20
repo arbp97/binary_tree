@@ -27,10 +27,10 @@ void create(Tree* tree, std::vector<int> dataset)
 void insert(Tree* tree, int data)
 {
   Node* newNode = new Node(data);
-  search(tree->root, newNode);
+  push(tree->root, newNode);
 }
 
-void search(Node* node, Node* newNode)
+void push(Node* node, Node* newNode)
 {
     /* Si el nuevo nodo es menor que root (node), debemos
 		 colocarlo a la izquierda */
@@ -48,7 +48,7 @@ void search(Node* node, Node* newNode)
 					Caso contrario, llamamos recursivamente a la funcion
 					para buscar en el subarbol correspondiente
 				*/
-        search(node->left, newNode);
+        push(node->left, newNode);
       }
     }
 		/*
@@ -64,12 +64,13 @@ void search(Node* node, Node* newNode)
       }
       else
       {
-        search(node->right, newNode);
+        push(node->right, newNode);
       }
     }
     else
     {
-    	std::cout << "invalid dataset";
+    	std::cout << "Node not created: " << newNode->data
+			<< " Node already exists..." << std::endl;
     }
 }
 
@@ -120,6 +121,22 @@ void inOrder(Node* root)
 	if(root->right) inOrder(root->right);
 }
 
+bool preOrderSearch(Node* root, int data, bool * result)
+{
+	/* Si se encuentra el dato, se levanta el flag */
+	if (root->data == data) *result = true;
+
+	/*
+		Si el dato aun no se ha encontrado, sigue recorriendo los
+		subarboles
+	*/
+	if(root->left && !(*result)) preOrderSearch(root->left, data, result);
+
+	if(root->right && !(*result)) preOrderSearch(root->right, data, result);
+
+	return result;
+}
+
 void postOrder(Node* root)
 {
 	/*
@@ -140,4 +157,16 @@ void postOrder(Node* root)
 		se imprime la raiz
 	*/
 	std::cout << "[" << root->data << "], ";
+}
+
+bool search(Tree* tree, int data)
+{
+	bool result = false;
+
+	if (!tree->root)
+		std::cout << "\nError: empty tree" << '\n';
+
+	preOrderSearch(tree->root, data, &result);
+
+	return result;
 }
