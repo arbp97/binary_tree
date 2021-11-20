@@ -18,46 +18,58 @@ Tree::Tree(int data)
 
 void create(Tree* tree, std::vector<int> dataset)
 {
-    for(int data : dataset)
-    {
-        insert(tree, data);
-    }
+  for(int data : dataset)
+  {
+    insert(tree, data);
+  }
 }
 
 void insert(Tree* tree, int data)
 {
-    Node* newNode = new Node(data);
-    search(tree->root, newNode);
+  Node* newNode = new Node(data);
+  search(tree->root, newNode);
 }
 
 void search(Node* node, Node* newNode)
 {
-    //std::cout << newNode->data;
+    /* Si el nuevo nodo es menor que root (node), debemos
+		 colocarlo a la izquierda */
     if(newNode->data < node->data)
     {
-        if(!node->left)
-        {
-            node->left = newNode;
-        }
-        else
-        {
-            search(node->left, newNode);
-        }
+			// Si el hijo izquierdo no ha sido seteado...
+      if(!node->left)
+      {
+				// el nuevo nodo ocupa su lugar
+        node->left = newNode;
+      }
+      else
+      {
+				/*
+					Caso contrario, llamamos recursivamente a la funcion
+					para buscar en el subarbol correspondiente
+				*/
+        search(node->left, newNode);
+      }
     }
+		/*
+			Si el nuevo nodo es mayor que root, se debe colocar a la derecha
+		*/
     else if(newNode->data > node->data)
     {
-        if(!node->right)
-        {
-            node->right = newNode;
-        }
-        else
-        {
-            search(node->right, newNode);
-        }
+			// si el hijo derecho no ha sido seteado
+      if(!node->right)
+      {
+				// se setea con el nuevo nodo
+        node->right = newNode;
+      }
+      else
+      {
+        search(node->right, newNode);
+      }
     }
     else
     {
-        std::cout << "invalid dataset";
+    	std::cout << "invalid dataset";
     }
 }
 
@@ -65,18 +77,28 @@ void search(Node* node, Node* newNode)
 
 void preOrder(Node* root)
 {
-    std::cout << "[" << root->data << "], ";
-    
-    if(root->left) preOrder(root->left);
-    
-    if(root->right) preOrder(root->right);
+	/*
+		Recorrido en preOrden:
+			1. visita la raiz
+			2. recorre subarbol izquierdo en preOrden
+			3. recorre subarbol derecho en preOrden
+	*/
+
+	std::cout << "[" << root->data << "], ";
+
+	/*
+		si el hijo izquierdo del root existe, entonces
+		se recorre el subarbol izquierdo recursivamente
+	*/
+	if(root->left) preOrder(root->left);
+
+	/*
+		si el hijo derecho del root existe, entonces
+		se recorre el subarbol derecho recursivamente
+	*/
+	if(root->right) preOrder(root->right);
 }
 
 void inOrder(Node* root);
 
 void postOrder(Node* root);
-
-
-
-
-
