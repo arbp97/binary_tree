@@ -99,6 +99,45 @@ void preOrder(Node* root)
 	if(root->right) preOrder(root->right);
 }
 
-void inOrder(Node* root);
+void inOrder(Node* root)
+{
+	/*
+		Recorrido en Orden:
+			1. recorre subarbol izquierdo en simetrico
+			2. visita la raiz
+			3. recorre subarbol derecho en simetrico
+	*/
 
-void postOrder(Node* root);
+	// si existe hijo izquierdo de root, entramos en su subarbol
+	if (root->left) inOrder(root->left);
+
+	// si ya no existe un hijo izquierdo, se imprime el root actual,
+	// que seria el hijo izquierdo del root anterior
+	std::cout << "[" << root->data << "], ";
+
+	// luego de verificar el hijo izquierdo, se pasa por el derecho
+	// hasta llegar al fondo
+	if(root->right) inOrder(root->right);
+}
+
+void postOrder(Node* root)
+{
+	/*
+		Recorrido en postOrden:
+			1.recorre subarbol izquierdo en orden final
+			2. recorre subarbol derecho en orden final
+			3. visita la raiz
+	*/
+
+	// si existe hijo izquierdo de root, entramos en su subarbol
+	if (root->left) postOrder(root->left);
+
+	// luego de verificar el hijo izquierdo, se pasa por el derecho
+	if(root->right) postOrder(root->right);
+
+	/*
+		cuando agotamos las posibilidades, llegando al fondo del arbol,
+		se imprime la raiz
+	*/
+	std::cout << "[" << root->data << "], ";
+}
