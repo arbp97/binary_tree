@@ -22,42 +22,40 @@ void create(Tree *tree, std::vector<int> dataset, int threshold)
 	for (int data : dataset)
 	{
 		insert(tree, data, threshold);
-		std::cout << "inserted "<< data << std::endl;
+		std::cout << "inserted " << data << std::endl;
 		getchar();
 	}
 
-	std::cout << "AFTER CREATING, tree root: "<< tree->root->data << std::endl;
-	std::cout << "tree root left: "<< tree->root->left->data << std::endl;
-	std::cout << "tree root right: "<< tree->root->right->data << std::endl;
+	std::cout << "AFTER CREATING, tree root: " << tree->root->data << std::endl;
+	std::cout << "tree root left: " << tree->root->left->data << std::endl;
+	std::cout << "tree root right: " << tree->root->right->data << std::endl;
 }
 
 void insert(Tree *tree, int data, int threshold)
 {
 	Node *newNode = new Node(data);
-	std::cout << "BEFORE PUSH ROOT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111:  "<< tree->root->data << std::endl;
-	push(tree->root, newNode, threshold);
-	std::cout << "AFTER PUSH ROOT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111  "<< tree->root->data << std::endl;
+	std::cout << "BEFORE PUSH ROOT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111:  " << tree->root->data << std::endl;
+	push(&tree->root, newNode, threshold);
+	std::cout << "AFTER PUSH ROOT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111  " << tree->root->data << std::endl;
 }
 
-void push(Node *node, Node *newNode, int threshold)
+void push(Node **node, Node *newNode, int threshold)
 {
 	/* Si el nuevo nodo es menor que root (node), debemos
 		 colocarlo a la izquierda */
 	std::cout << "entering push" << std::endl;
-	if (newNode->data < node->data)
+	if (newNode->data < (*node)->data)
 	{
-		std::cout << "newnode "<< newNode->data << " is less than root " << node->data << std::endl;
+		std::cout << "newnode " << newNode->data << " is less than root " << (*node)->data << std::endl;
 		// Si el hijo izquierdo no ha sido seteado...
-		if (!node->left)
+		if (!(*node)->left)
 		{
 			std::cout << "found place to put node in LEFT" << std::endl;
 			// el nuevo nodo ocupa su lugar
-			node->left = newNode;
+			(*node)->left = newNode;
 
 			newNode->height = 1 +
 							  std::max(height(newNode->left), height(newNode->right));
-
-			//balance(newNode, threshold);
 		}
 		else
 		{
@@ -66,31 +64,29 @@ void push(Node *node, Node *newNode, int threshold)
 				para buscar en el subarbol correspondiente
 			*/
 			std::cout << "going down left" << std::endl;
-			push(node->left, newNode, threshold);
+			push(&(*node)->left, newNode, threshold);
 		}
 	}
 	/*
 			Si el nuevo nodo es mayor que root, se debe colocar a la derecha
 		*/
-	else if (newNode->data > node->data)
+	else if (newNode->data > (*node)->data)
 	{
-		std::cout << "newnode "<< newNode->data << " is greater than root " << node->data << std::endl;
+		std::cout << "newnode " << newNode->data << " is greater than root " << (*node)->data << std::endl;
 		// si el hijo derecho no ha sido seteado
-		if (node->right)
+		if (!(*node)->right)
 		{
 			std::cout << "found place to put node in RIGHT" << std::endl;
 			// se setea con el nuevo nodo
-			node->right = newNode;
+			(*node)->right = newNode;
 
 			newNode->height = 1 +
 							  std::max(height(newNode->left), height(newNode->right));
-
-			//balance(newNode, threshold);
 		}
 		else
 		{
 			std::cout << "going down right" << std::endl;
-			push(node->right, newNode, threshold);
+			push(&(*node)->right, newNode, threshold);
 		}
 	}
 	else
@@ -99,12 +95,17 @@ void push(Node *node, Node *newNode, int threshold)
 				  << " Node already exists..." << std::endl;
 	}
 
+	/*
+		luego de insertar el nodo que debia insertar, cuando la funcion
+		vuelve recursivamente sobre si, se van balanceando todos los
+		sub arboles
+	*/
 	std::cout << "past if/else block" << std::endl;
-	node->height = 1 +
-				   std::max(height(node->left), height(node->right));
-	std::cout << "balancing node: "<< node->data << std::endl;
-	balance(node, threshold);
-	std::cout << "balanced node now is: "<< node->data << std::endl;
+	(*node)->height = 1 +
+					  std::max(height((*node)->left), height((*node)->right));
+	std::cout << "balancing node: " << (*node)->data << std::endl;
+	balance(&(*node), threshold);
+	std::cout << "balanced node now is: " << (*node)->data << std::endl;
 }
 
 int height(Node *node)
@@ -131,10 +132,10 @@ int getBalance(Node *node)
 	return b;
 }
 
-void balance(Node *root, int threshold)
-{	//AFTER EXITING BALANCE, NODE DOESNT CHANGE, HERE IS THE BUG?????????????????????????
+void balance(Node **root, int threshold)
+{
 	std::cout << "entering balance" << std::endl;
-	int rootBalance = getBalance(root);
+	int rootBalance = getBalance(*root);
 	std::cout << "got balance" << std::endl;
 	/*
 	si el balance del nodo es mayor a nuestro limite,
@@ -144,13 +145,13 @@ void balance(Node *root, int threshold)
 	if (rootBalance > threshold)
 	{
 		std::cout << "balance is greather than threshold" << std::endl;
-		std::cout << "before rotation: root: "<< root->data << std::endl;
-		if (getBalance(root->left) >= 0)
-			root = rotateRight(root);
+		std::cout << "before rotation: root: " << (*root)->data << std::endl;
+		if (getBalance((*root)->left) >= 0)
+			*root = rotateRight(*root);
 		else
-			root = rotateLeftRight(root);
-		std::cout << "after rotation: root: "<< root->data << std::endl;
-		std::cout << "after rotation: root-right: "<< root->right->data << std::endl;
+			*root = rotateLeftRight(*root);
+		std::cout << "after rotation: root: " << (*root)->data << std::endl;
+		std::cout << "after rotation: root-right: " << (*root)->right->data << std::endl;
 	}
 	/*
 	si el balance del nodo es menor que nuestro limite,
@@ -160,10 +161,10 @@ void balance(Node *root, int threshold)
 	else if (rootBalance < -threshold)
 	{
 		std::cout << "balance is less than threshold" << std::endl;
-		if (getBalance(root->right) <= 0)
-			root = rotateLeft(root);
+		if (getBalance((*root)->right) <= 0)
+			*root = rotateLeft(*root);
 		else
-			root = rotateRightLeft(root);
+			*root = rotateRightLeft(*root);
 	}
 	std::cout << "exit balance" << std::endl;
 }

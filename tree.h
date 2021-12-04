@@ -38,7 +38,7 @@ void insert(Tree *tree, int data, int threshold);
   Busca el lugar indicado para un nuevo nodo en el arbol, segun
   el valor del root indicado (node), y lo inserta
 */
-void push(Node *node, Node *newNode, int threshold);
+void push(Node **node, Node *newNode, int threshold);
 
 /*
   Busca el dato indicado en el arbol
@@ -53,7 +53,7 @@ int getBalance(Node *node);
 /*
   verifica y balancea un arbol
 */
-void balance(Node *root, int threshold);
+void balance(Node **root, int threshold);
 
 /*
   Devuelve la altura del nodo
@@ -63,22 +63,22 @@ int height(Node *node);
 /*
   Hace una rotacion simple a la derecha
 */
-Node* rotateRight(Node *node);
+Node *rotateRight(Node *node);
 
 /*
   Hace una rotacion simple a la izquierda
 */
-Node* rotateLeft(Node *node);
+Node *rotateLeft(Node *node);
 
 /*
   Hace una rotacion doble, primero derecha y luego izquierda
 */
-Node* rotateRightLeft(Node *node);
+Node *rotateRightLeft(Node *node);
 
 /*
   Hace una rotacion doble, primero a la izquierda y luego a la derecha
 */
-Node* rotateLeftRight(Node *node);
+Node *rotateLeftRight(Node *node);
 
 /******************************************************************************/
 
