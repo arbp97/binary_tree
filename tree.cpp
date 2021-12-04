@@ -41,8 +41,10 @@ void insert(Tree *tree, int data, int threshold)
 
 void push(Node **node, Node *newNode, int threshold)
 {
-	/* Si el nuevo nodo es menor que root (node), debemos
-		 colocarlo a la izquierda */
+	/*
+	Si el nuevo nodo es menor que root (node), debemos
+	colocarlo a la izquierda
+	*/
 	std::cout << "entering push" << std::endl;
 	if (newNode->data < (*node)->data)
 	{
@@ -54,14 +56,13 @@ void push(Node **node, Node *newNode, int threshold)
 			// el nuevo nodo ocupa su lugar
 			(*node)->left = newNode;
 
-			newNode->height = 1 +
-							  std::max(height(newNode->left), height(newNode->right));
+			newNode->height = 1 + std::max(height(newNode->left), height(newNode->right));
 		}
 		else
 		{
 			/*
-				Caso contrario, llamamos recursivamente a la funcion
-				para buscar en el subarbol correspondiente
+			Caso contrario, llamamos recursivamente a la funcion
+			para buscar en el subarbol correspondiente
 			*/
 			std::cout << "going down left" << std::endl;
 			push(&(*node)->left, newNode, threshold);
@@ -80,8 +81,7 @@ void push(Node **node, Node *newNode, int threshold)
 			// se setea con el nuevo nodo
 			(*node)->right = newNode;
 
-			newNode->height = 1 +
-							  std::max(height(newNode->left), height(newNode->right));
+			newNode->height = 1 + std::max(height(newNode->left), height(newNode->right));
 		}
 		else
 		{
@@ -96,13 +96,12 @@ void push(Node **node, Node *newNode, int threshold)
 	}
 
 	/*
-		luego de insertar el nodo que debia insertar, cuando la funcion
-		vuelve recursivamente sobre si, se van balanceando todos los
-		sub arboles
+	luego de insertar el nodo que debia insertar, cuando la funcion
+	vuelve recursivamente sobre si, se van balanceando todos los
+	sub arboles
 	*/
 	std::cout << "past if/else block" << std::endl;
-	(*node)->height = 1 +
-					  std::max(height((*node)->left), height((*node)->right));
+	(*node)->height = 1 + std::max(height((*node)->left), height((*node)->right));
 	std::cout << "balancing node: " << (*node)->data << std::endl;
 	balance(&(*node), threshold);
 	std::cout << "balanced node now is: " << (*node)->data << std::endl;
@@ -146,6 +145,23 @@ void balance(Node **root, int threshold)
 	{
 		std::cout << "balance is greather than threshold" << std::endl;
 		std::cout << "before rotation: root: " << (*root)->data << std::endl;
+		/*
+		si esta desbalanceado hacia la izquierda, por supuesto
+		se revisa bajando por ese lado, revisando el hijo izq. de root.
+		si su balance es 0 o positivo, quiere decir que no tiene
+		hijos o tiene solo un hijo a la izquierda. en ese caso solo
+		necesitariamos una rotacion a la derecha.
+		en el caso de ser un balance negativo, quiere decir que tiene
+		un hijo a la derecha, y en ese caso debemos hacer una rotacion
+		doble izquierda-derecha (ilustracion).
+
+			[3]				   [3]					[2]
+			/		rot izq.   /	rot der.	   /   \
+		   [1] 		--->	 [2]	--->		 [1]   [3]
+		   	 \				 /
+			 [2]		   [1]
+		*/
+		std::cout << "(BALANCE) ROOT->LEFT BALANCE: " << getBalance((*root)->left) << std::endl;
 		if (getBalance((*root)->left) >= 0)
 			*root = rotateRight(*root);
 		else
@@ -160,6 +176,10 @@ void balance(Node **root, int threshold)
 	*/
 	else if (rootBalance < -threshold)
 	{
+		/*
+		aqui sucederia lo mismo que en el ejemplo anterior,
+		solo que del lado derecho.
+		*/
 		std::cout << "balance is less than threshold" << std::endl;
 		if (getBalance((*root)->right) <= 0)
 			*root = rotateLeft(*root);
@@ -177,11 +197,9 @@ Node *rotateRight(Node *node)
 	node->left = tmp->right;
 	tmp->right = node;
 
-	node->height = 1 +
-				   std::max(height(node->left), height(node->right));
+	node->height = 1 + std::max(height(node->left), height(node->right));
 
-	tmp->height = 1 +
-				  std::max(height(tmp->left), height(tmp->right));
+	tmp->height = 1 + std::max(height(tmp->left), height(tmp->right));
 
 	return tmp;
 }
@@ -194,17 +212,16 @@ Node *rotateLeft(Node *node)
 	node->right = tmp->left;
 	tmp->left = node;
 
-	node->height = 1 +
-				   std::max(height(node->left), height(node->right));
+	node->height = 1 + std::max(height(node->left), height(node->right));
 
-	tmp->height = 1 +
-				  std::max(height(tmp->left), height(tmp->right));
+	tmp->height = 1 + std::max(height(tmp->left), height(tmp->right));
 
 	return tmp;
 }
 
 Node *rotateRightLeft(Node *node)
 {
+	std::cout << "rotating rightleft" << std::endl;
 	node->right = rotateRight(node->right);
 
 	return rotateLeft(node);
@@ -212,6 +229,7 @@ Node *rotateRightLeft(Node *node)
 
 Node *rotateLeftRight(Node *node)
 {
+	std::cout << "rotating leftright" << std::endl;
 	node->left = rotateLeft(node->left);
 
 	return rotateRight(node);
@@ -222,24 +240,24 @@ Node *rotateLeftRight(Node *node)
 void preOrder(Node *root)
 {
 	/*
-		Recorrido en preOrden:
-			1. visita la raiz
-			2. recorre subarbol izquierdo en preOrden
-			3. recorre subarbol derecho en preOrden
+	Recorrido en preOrden:
+	1. visita la raiz
+	2. recorre subarbol izquierdo en preOrden
+	3. recorre subarbol derecho en preOrden
 	*/
 
 	std::cout << "[" << root->data << "], ";
 
 	/*
-		si el hijo izquierdo del root existe, entonces
-		se recorre el subarbol izquierdo recursivamente
+	si el hijo izquierdo del root existe, entonces
+	se recorre el subarbol izquierdo recursivamente
 	*/
 	if (root->left)
 		preOrder(root->left);
 
 	/*
-		si el hijo derecho del root existe, entonces
-		se recorre el subarbol derecho recursivamente
+	si el hijo derecho del root existe, entonces
+	se recorre el subarbol derecho recursivamente
 	*/
 	if (root->right)
 		preOrder(root->right);
@@ -248,10 +266,10 @@ void preOrder(Node *root)
 void inOrder(Node *root)
 {
 	/*
-		Recorrido en Orden:
-			1. recorre subarbol izquierdo en simetrico
-			2. visita la raiz
-			3. recorre subarbol derecho en simetrico
+	Recorrido en Orden:
+	1. recorre subarbol izquierdo en simetrico
+	2. visita la raiz
+	3. recorre subarbol derecho en simetrico
 	*/
 
 	// si existe hijo izquierdo de root, entramos en su subarbol
@@ -275,8 +293,8 @@ bool preOrderSearch(Node *root, int data, bool *result)
 		*result = true;
 
 	/*
-		Si el dato aun no se ha encontrado, sigue recorriendo los
-		subarboles
+	Si el dato aun no se ha encontrado, sigue recorriendo los
+	subarboles
 	*/
 	if (root->left && !(*result))
 		preOrderSearch(root->left, data, result);
@@ -290,10 +308,10 @@ bool preOrderSearch(Node *root, int data, bool *result)
 void postOrder(Node *root)
 {
 	/*
-		Recorrido en postOrden:
-			1.recorre subarbol izquierdo en orden final
-			2. recorre subarbol derecho en orden final
-			3. visita la raiz
+	Recorrido en postOrden:
+	1.recorre subarbol izquierdo en orden final
+	2. recorre subarbol derecho en orden final
+	3. visita la raiz
 	*/
 
 	// si existe hijo izquierdo de root, entramos en su subarbol
@@ -305,8 +323,8 @@ void postOrder(Node *root)
 		postOrder(root->right);
 
 	/*
-		cuando agotamos las posibilidades, llegando al fondo del arbol,
-		se imprime la raiz
+	cuando agotamos las posibilidades, llegando al fondo del arbol,
+	se imprime la raiz
 	*/
 	std::cout << "[" << root->data << "], ";
 }

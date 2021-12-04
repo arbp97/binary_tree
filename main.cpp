@@ -8,7 +8,7 @@ int main()
   Tree *tree = new Tree(3); // A (root)
 
   // DATASET:                B  C   D  E   F   G
-  std::vector<int> dataset{2, 1};
+  std::vector<int> dataset{1, 2};
 
   create(tree, dataset, 1);
 
@@ -33,7 +33,7 @@ int main()
 
   inOrder(tree->root);
 
-  int iSearchValue = 0;
+  /*int iSearchValue = 0;
 
   std::cout << "\nSearch for value: ";
   std::cin >> iSearchValue;
@@ -46,7 +46,7 @@ int main()
   case true:
     std::cout << "\nFound" << '\n';
     break;
-  }
+  }*/
 
   return 0;
 }
